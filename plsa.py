@@ -96,7 +96,11 @@ class Corpus(object):
         # your code here
         # ############################
 
-        pass    # REMOVE THIS
+        self.document_topic_prob = np.random.random_sample((self.number_of_documents, number_of_topics))
+        self.document_topic_prob = normalize(self.document_topic_prob)
+
+        self.topic_word_prob = np.random.random_sample((number_of_topics, len(self.vocabulary)))
+        self.topic_word_prob = normalize(self.topic_word_prob)
         
 
     def initialize_uniformly(self, number_of_topics):
