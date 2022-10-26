@@ -49,7 +49,11 @@ class Corpus(object):
         # your code here
         # #############################
         
-        pass    # REMOVE THIS
+        my_file = open(self.documents_path)
+        for doc in my_file.readlines():
+            self.documents.append(doc.split())
+
+        self.number_of_documents = len(self.documents)
 
     def build_vocabulary(self):
         """
