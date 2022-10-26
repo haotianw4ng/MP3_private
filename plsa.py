@@ -58,11 +58,13 @@ class Corpus(object):
 
         Update self.vocabulary_size
         """
-        # #############################
-        # your code here
-        # #############################
+        for document in self.documents:
+            for word in document:
+                if word not in self.vocabulary:
+                    self.vocabulary.append(word)
+                    
+        self.vocabulary_size = len(self.vocabulary)
         
-        pass    # REMOVE THIS
 
     def build_term_doc_matrix(self):
         """
