@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-
+ # submit again
 def normalize(input_matrix):
     """
     Normalizes the rows of a 2d input_matrix so they sum to 1
