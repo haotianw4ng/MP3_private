@@ -136,14 +136,16 @@ class Corpus(object):
         print("E step:")
         
         # ############################
-
         for document in range(self.number_of_documents):
             for word in range(self.vocabulary_size):
                 topic_sum = 0
-                for topic in range(topic_sum):
-                    topic_sum += self.document_topic_prob[document][topic] * self.topic_word_prob[topic][word]
-                for topic in range(topic_sum):
-                    self.topic_prob[document][topic][word] /= topic_sum
+                prob = len(self.topic_prob[0])
+                for topic in range(prob):
+                    topic_sum += self.document_topic_prob[document][topic]*self.topic_word_prob[topic][word]
+                for topic in range(prob):
+                    self.topic_prob[document][topic][word] = self.document_topic_prob[document][topic]*self.topic_word_prob[topic][word] / topic_sum
+
+
 
         # your code here
         # ############################
