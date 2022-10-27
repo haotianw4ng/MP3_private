@@ -81,7 +81,11 @@ class Corpus(object):
         # your code here
         # ############################
         
-        pass    # REMOVE THIS
+        self.term_doc_matrix = np.zeros([self.number_of_documents,self.vocabulary_size])
+        for doc in range(self.number_of_documents):
+            for word in range(self.vocabulary_size):
+                self.term_doc_matrix[doc][word] = self.documents[doc].count(self.vocabulary[word])
+
 
 
     def initialize_randomly(self, number_of_topics):
@@ -93,8 +97,7 @@ class Corpus(object):
         HINT: you will find numpy's random matrix useful [https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.random.random.html]
         """
         # ############################
-        # your code here
-        # ############################
+
 
         self.document_topic_prob = np.random.random_sample((self.number_of_documents, number_of_topics))
         self.document_topic_prob = normalize(self.document_topic_prob)
@@ -102,7 +105,8 @@ class Corpus(object):
         self.topic_word_prob = np.random.random_sample((number_of_topics, len(self.vocabulary)))
         self.topic_word_prob = normalize(self.topic_word_prob)
         
-
+        # your code here
+        # ############################
     def initialize_uniformly(self, number_of_topics):
         """
         Initializes the matrices: self.document_topic_prob and self.topic_word_prob with a uniform 
@@ -132,10 +136,17 @@ class Corpus(object):
         print("E step:")
         
         # ############################
+
+        for document in range(self.number_of_documents):
+            for word in range(self.vocabulary_size):
+                topic_sum = 0
+                for topic in range(topic_sum):
+                    topic_sum += self.document_topic_prob[document][topic] * self.topic_word_prob[topic][word]
+                for topic in range(topic_sum):
+                    self.topic_prob[document][topic][word] /= topic_sum
+
         # your code here
         # ############################
-
-        pass    # REMOVE THIS
             
 
     def maximization_step(self, number_of_topics):
@@ -146,17 +157,29 @@ class Corpus(object):
         # update P(w | z)
         
         # ############################
+
+        for topic in range(number_of_topics):
+            for word in range(self.vocabulary_size):
+                self.topic_word_prob[topic][word] = 0
+                for doc in range(self.number_of_documents):
+                    self.topic_word_prob[topic][word] += self.term_doc_matrix[doc][word] * self.topic_prob[doc][topic][word]
+        self.topic_word_prob = normalize(self.topic_word_prob)
+
         # your code here
         # ############################
 
-        
         # update P(z | d)
 
         # ############################
+        for doc in range(self.number_of_documents):
+            for topic in range(number_of_topics):
+                self.document_topic_prob[doc][topic] = 0
+                for word in range(self.vocabulary_size):
+                    self.document_topic_prob[doc][topic] += self.term_doc_matrix[doc][word] * self.topic_prob[doc][topic][word]
+        self.document_topic_prob = normalize(self.document_topic_prob)
+
         # your code here
         # ############################
-        
-        pass    # REMOVE THIS
 
 
     def calculate_likelihood(self, number_of_topics):
@@ -168,7 +191,19 @@ class Corpus(object):
         """
         # ############################
         # your code here
+        word_sum = 0
+        for document in range(self.number_of_documents):
+            for word in range(self.vocabulary_size):
+                topic_sum = 0
+                for topic in range(number_of_topics):
+                    topic_sum += (self.document_topic_prob[document][topic] * self.topic_word_prob[topic][word])
+                if topic_sum > 0:
+                    word_sum += np.log(topic_sum) * self.term_doc_matrix[document][word]
+
+        self.likelihoods.append(word_sum)
         # ############################
+
+
         
         return
 
@@ -198,9 +233,13 @@ class Corpus(object):
 
             # ############################
             # your code here
+            self.expectation_step()
+            self.maximization_step(number_of_topics)
+            self.calculate_likelihood(number_of_topics)
+
             # ############################
 
-            pass    # REMOVE THIS
+        print(self.likelihoods)
 
 
 
